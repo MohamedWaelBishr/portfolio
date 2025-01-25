@@ -30,7 +30,7 @@ export function ScrollToTop() {
     <Button
       variant="outline"
       size="icon"
-      className="fixed bottom-8 right-4 z-50 rounded-full opacity-90 hover:opacity-100 transition-opacity"
+      className="bg-gray-200 bg-opacity-25 p-2 fixed bottom-8 right-4 z-50 rounded-full opacity-90 hover:opacity-100 transition-opacity translate-x-1/2 animate-bounce cursor-pointer"
       onClick={scrollToTop}
     >
       <ArrowUp className="h-4 w-4" />

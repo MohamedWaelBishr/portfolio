@@ -85,15 +85,15 @@ export function HeroSection() {
           </Button>
         </div>
 
-        <div className="relative w-[300px] h-[300px]">
+        <div className="relative w-[300px] h-[300px]  md:w-[500px] md:h-[500px]">
           <div className="spinning-border w-full h-full">
             <div className="rounded-full overflow-hidden relative w-full h-full bg-background">
               <Image
-                src="/assets/profile.jpg"
+                src="/assets/profile.png"
                 alt="Profile"
                 width={300}
                 height={300}
-                className="object-cover"
+                className="object-cover grayscale w-[300px] h-[300px]  md:w-[500px] md:h-[500px]"
                 priority
               />
             </div>
@@ -101,7 +101,7 @@ export function HeroSection() {
         </div>
       </div>
       <div
-        className="absolute bottom-8 left-[48%] -translate-x-1/2 animate-bounce cursor-pointer"
+        className="rounded-full p-2 bg-opacity-25 bg-gray-200 absolute bottom-2 md:bottom-8 left-[46%]  md:left-[48%] -translate-x-1/2 animate-bounce cursor-pointer"
         onClick={handleScroll}
       >
         <ChevronDown className="h-6 w-6 text-muted-foreground" />

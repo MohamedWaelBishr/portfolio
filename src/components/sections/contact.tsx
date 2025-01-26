@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { TermsModal } from "@/components/terms-modal";
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -17,6 +18,7 @@ export function ContactSection() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -96,7 +98,7 @@ export function ContactSection() {
           <Input
             id="email"
             type="email"
-            placeholder="Enter your phone number"
+            placeholder="Enter your email"
             className="border dark:bg-black"
             value={formData.email}
             onChange={(e) =>
@@ -131,13 +133,13 @@ export function ContactSection() {
             className="text-sm font-normal text-gray-600 dark:text-gray-400"
           >
             I agree to the{" "}
-            <Link
-              href="#"
+            <button
+              type="button"
+              onClick={() => setIsTermsOpen(true)}
               className="underline underline-offset-2 text-gray-600 dark:text-gray-400"
-              prefetch={false}
             >
               Terms &amp; Conditions
-            </Link>
+            </button>
           </Label>
         </div>
         <Button
@@ -148,6 +150,7 @@ export function ContactSection() {
           {isSubmitting ? "Sending..." : "Submit"}
         </Button>
       </div>
+      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
     </form>
   );
 }

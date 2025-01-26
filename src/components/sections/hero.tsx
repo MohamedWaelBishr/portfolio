@@ -46,6 +46,7 @@ export function HeroSection() {
             <Button
               variant="outline"
               size="icon"
+              title="GitHub"
               onClick={() =>
                 window.open("https://github.com/MohamedWaelBishr", "_blank")
               }
@@ -55,6 +56,7 @@ export function HeroSection() {
             <Button
               variant="outline"
               size="icon"
+              title="LinkedIn"
               onClick={() =>
                 window.open(
                   "https://www.linkedin.com/in/mohamed-wael-bishr/",
@@ -67,6 +69,7 @@ export function HeroSection() {
             <Button
               variant="outline"
               size="icon"
+              title="Email"
               onClick={() => window.open("mailto:mohamedwaelbishr@gmail.com")}
             >
               <Mail className="h-5 w-5" />
@@ -74,6 +77,7 @@ export function HeroSection() {
           </div>
           <Button
             className="mt-4"
+            title="Download Resume"
             onClick={() =>
               window.open(
                 "https://drive.google.com/uc?export=download&id=1V3tUAtqvv3fcgBubj-M06MFee0ISkbZi",
@@ -86,11 +90,12 @@ export function HeroSection() {
         </div>
 
         <div className="relative w-[300px] h-[300px]  md:w-[500px] md:h-[500px]">
-          <div className="spinning-border w-full h-full">
+          <div className=" rounded-full w-full h-full">
             <div className="rounded-full overflow-hidden relative w-full h-full bg-background">
               <Image
                 src="/assets/profile.png"
                 alt="Profile"
+                title="Mohamed Bishr"
                 width={300}
                 height={300}
                 className="object-cover grayscale w-[300px] h-[300px]  md:w-[500px] md:h-[500px]"
@@ -101,7 +106,8 @@ export function HeroSection() {
         </div>
       </div>
       <div
-        className="rounded-full p-2 bg-opacity-25 bg-gray-200 absolute bottom-2 md:bottom-8 left-[46%]  md:left-[48%] -translate-x-1/2 animate-bounce cursor-pointer"
+        title="Scroll down"
+        className="hidden md:block rounded-full p-2 bg-opacity-25 bg-gray-200 absolute bottom-2 md:bottom-8 left-[46%]  md:left-[48%] -translate-x-1/2 animate-bounce cursor-pointer"
         onClick={handleScroll}
       >
         <ChevronDown className="h-6 w-6 text-muted-foreground" />

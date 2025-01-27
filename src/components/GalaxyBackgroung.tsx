@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useRef, useMemo, useState, useEffect } from "react";
+import React, { useRef, useMemo, useState, useEffect, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Points, PointMaterial } from "@react-three/drei";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 
 function Particles() {
@@ -25,12 +26,10 @@ function Particles() {
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      // Normalize mouse position to [-1, 1] range
       const x = (e.clientX / size.width) * 2 - 1;
       const y = -(e.clientY / size.height) * 2 + 1;
       setMousePos({ x, y });
     };
-
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [size.width, size.height]);
@@ -39,8 +38,6 @@ function Particles() {
     if (pointsRef.current) {
       pointsRef.current.rotation.x += delta * 0.1;
       pointsRef.current.rotation.y += delta * 0.1;
-
-      // Update position based on mouse
       pointsRef.current.position.x = mousePos.x * 0.5;
       pointsRef.current.position.y = mousePos.y * 0.5;
     }
@@ -48,12 +45,14 @@ function Particles() {
 
   return (
     <Points ref={pointsRef} positions={particles}>
+      {/* Use AdditiveBlending & a warm color to simulate sun rays */}
       <PointMaterial
         transparent
-        color="#ffffff"
-        size={0.03}
+        color="#dddddd"
+        size={0.08}
         sizeAttenuation={true}
         depthWrite={false}
+        blending={THREE.AdditiveBlending}
       />
     </Points>
   );
@@ -72,7 +71,17 @@ export default function ParticlesBackground() {
       }}
       camera={{ position: [0, 0, 5] }}
     >
-      <Particles />
+      <Suspense fallback={null}>
+        <Particles />
+        {/* Bloom pass to enhance the glow */}
+        <EffectComposer>
+          <Bloom
+            luminanceThreshold={0.5}
+            luminanceSmoothing={2}
+            intensity={2}
+          />
+        </EffectComposer>
+      </Suspense>
     </Canvas>
   );
 }

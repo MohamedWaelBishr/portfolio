@@ -7,6 +7,9 @@ import { ScrollToTop } from "@/components/scroll-to-top";
 import ParticlesBackground from "@/components/GalaxyBackgroung";
 import dynamic from "next/dynamic";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { Volume2, VolumeX } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { BackgroundMusic } from "@/components/background-music";
 
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
@@ -46,7 +49,7 @@ export default function RootLayout({
         <div id="stars2"></div>
         <div id="stars3"></div> */}
         <ParticlesBackgroundComponent />
-
+        <BackgroundMusic />
         <Navbar />
         {children}
 

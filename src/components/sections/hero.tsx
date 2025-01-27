@@ -5,9 +5,13 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Github, Linkedin, Mail, ChevronDown } from "lucide-react";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
+import { TypeWriter } from "@/components/ui/type-writer";
 
 export function HeroSection() {
   const [isMounted, setIsMounted] = useState(false);
+  const [nameComplete, setNameComplete] = useState(false);
+  const [titleComplete, setTitleComplete] = useState(false);
+  const [descComplete, setDescComplete] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -32,17 +36,34 @@ export function HeroSection() {
       <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8">
         <div className="space-y-4 text-center md:text-left">
           <h1 className="text-4xl md:text-6xl font-bold gradient-text">
-            Mohamed Bishr
+            <TypeWriter
+              text="Mohamed Bishr"
+              delay={50}
+              startTyping={true}
+              onComplete={() => setNameComplete(true)}
+            />
           </h1>
-          <h2 className="text-xl md:text-2xl text-muted-foreground">
-            Senior Software Engineer
+          <h2 className="text-xl md:text-2xl ">
+            <TypeWriter
+              text="Senior Software Engineer"
+              delay={50}
+              startTyping={nameComplete}
+              onComplete={() => setTitleComplete(true)}
+            />
           </h2>
-          <p className="max-w-[600px] text-muted-foreground">
-            Building scalable and performant applications with modern
-            technologies. Specialized in distributed systems and cloud
-            architecture.
+          <p className="max-w-[600px] ">
+            <TypeWriter
+              text="Building scalable, high-performance applications with expertise in React.js, Node.js, and cross-platform solutions. Skilled in agile methodologies, collaborative teamwork, and delivering user-centric software across industries. Passionate about solving technical challenges and driving process improvements."
+              delay={50}
+              startTyping={titleComplete}
+              onComplete={() => setDescComplete(true)}
+            />
           </p>
-          <div className="flex items-center gap-4 justify-center md:justify-start">
+          <div
+            className={`flex items-center gap-4 justify-center md:justify-start transition-opacity duration-500 ${
+              descComplete ? "opacity-100" : "opacity-0"
+            }`}
+          >
             <Button
               variant="outline"
               size="icon"
@@ -76,7 +97,9 @@ export function HeroSection() {
             </Button>
           </div>
           <Button
-            className="mt-4"
+            className={`mt-4 transition-opacity duration-500 ${
+              descComplete ? "opacity-100" : "opacity-0"
+            }`}
             title="Download Resume"
             onClick={() =>
               window.open(

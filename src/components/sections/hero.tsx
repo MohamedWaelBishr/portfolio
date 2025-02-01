@@ -6,12 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Github, Linkedin, Mail, ChevronDown } from "lucide-react";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { TypeWriter } from "@/components/ui/type-writer";
+import {
+  AnimatedSpan,
+  Terminal,
+  TypingAnimation,
+} from "@/components/ui/terminal";
 
 export function HeroSection() {
   const [isMounted, setIsMounted] = useState(false);
   const [nameComplete, setNameComplete] = useState(false);
   const [titleComplete, setTitleComplete] = useState(false);
-  const [descComplete, setDescComplete] = useState(false);
 
   useEffect(() => {
     setIsMounted(true);
@@ -51,18 +55,9 @@ export function HeroSection() {
               onComplete={() => setTitleComplete(true)}
             />
           </h2>
-          <p className="max-w-[600px] ">
-            <TypeWriter
-              text="Building scalable, high-performance applications with expertise in React.js, Node.js, and cross-platform solutions. Skilled in agile methodologies, collaborative teamwork, and delivering user-centric software across industries. Passionate about solving technical challenges and driving process improvements."
-              delay={50}
-              startTyping={titleComplete}
-              onComplete={() => setDescComplete(true)}
-            />
-          </p>
+          <TerminalDemo />
           <div
-            className={`flex items-center gap-4 justify-center md:justify-start transition-opacity duration-500 ${
-              descComplete ? "opacity-100" : "opacity-0"
-            }`}
+            className={`flex items-center gap-4 justify-center md:justify-start transition-opacity duration-500 opacity-100`}
           >
             <Button
               variant="outline"
@@ -97,9 +92,7 @@ export function HeroSection() {
             </Button>
           </div>
           <Button
-            className={`mt-4 transition-opacity duration-500 ${
-              descComplete ? "opacity-100" : "opacity-0"
-            }`}
+            className={`mt-4 transition-opacity duration-500 opacity-100`}
             title="Download Resume"
             onClick={() =>
               window.open(
@@ -136,5 +129,45 @@ export function HeroSection() {
         <ChevronDown className="h-6 w-6 text-muted-foreground" />
       </div>
     </div>
+  );
+}
+
+export function TerminalDemo() {
+  return (
+    <Terminal className="!overflow-hidden">
+      {/* New Content */}
+      <TypingAnimation>&gt; About Me</TypingAnimation>
+
+      <AnimatedSpan delay={1500} className="text-gray-200">
+        <span>✔ Building scalable, high-performance applications.</span>
+      </AnimatedSpan>
+      <AnimatedSpan delay={2000} className="text-gray-200">
+        <span>
+          ✔ Expertise in React.js, Node.js, and cross-platform solutions.
+        </span>
+      </AnimatedSpan>
+      <AnimatedSpan delay={2500} className="text-gray-200">
+        <span>
+          ✔ Skilled in agile methodologies and collaborative teamwork.
+        </span>
+      </AnimatedSpan>
+      <AnimatedSpan delay={3000} className="text-gray-200">
+        <span>✔ Delivering user-centric software across industries.</span>
+      </AnimatedSpan>
+      <AnimatedSpan delay={3500} className="text-gray-200">
+        <span>✔ Passionate about solving technical challenges.</span>
+      </AnimatedSpan>
+      <AnimatedSpan delay={4000} className="text-gray-200">
+        <span>✔ Driving process improvements for better outcomes.</span>
+      </AnimatedSpan>
+
+      {/* Success Message */}
+      <TypingAnimation
+        delay={4500}
+        className="text-gray-200 animate-pulse mt-2"
+      >
+        Ready to collaborate and build amazing solutions!
+      </TypingAnimation>
+    </Terminal>
   );
 }

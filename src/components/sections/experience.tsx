@@ -194,7 +194,7 @@ export function ExperienceSection() {
             initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] as const }}
             className={`relative flex flex-col md:flex-row gap-8 mb-12 ${
               index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
             }`}

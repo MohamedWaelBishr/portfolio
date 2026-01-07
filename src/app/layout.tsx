@@ -1,37 +1,45 @@
 import type { Metadata } from "next";
-import { Space_Grotesk, Inter } from "next/font/google";
+import { Outfit, DM_Sans } from "next/font/google";
 import "./globals.css";
-import "./styles.scss";
 import { Navbar } from "@/components/navbar";
 import { ScrollToTop } from "@/components/scroll-to-top";
-import ParticlesBackground from "@/components/GalaxyBackgroung";
 import dynamic from "next/dynamic";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
-import { Volume2, VolumeX } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
 import { BackgroundMusic } from "@/components/background-music";
+import { Footer } from "@/components/footer";
+import { ScrollProgress } from "@/components/scroll-progress";
 
-const spaceGrotesk = Space_Grotesk({
-  variable: "--font-space-grotesk",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
+  display: "swap",
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const dmSans = DM_Sans({
+  variable: "--font-dm-sans",
   subsets: ["latin"],
+  display: "swap",
 });
 
 const ParticlesBackgroundComponent = dynamic(
   () => import("@/components/GalaxyBackgroung").then((mod) => mod.default),
   {
-    loading: () => <LoadingSkeleton />,
+    loading: () => null,
+    ssr: false,
   }
 );
 
 export const metadata: Metadata = {
-  title: "Mohamed Bishr Portfolio | Senior Software Engineer",
+  title: "Mohamed Bishr | Senior Software Engineer",
   description:
-    "Professional portfolio showcasing full-stack development expertise",
+    "Professional portfolio showcasing full-stack development expertise. Building scalable, high-performance applications with React, Node.js, and modern web technologies.",
+  keywords: ["Software Engineer", "Full Stack Developer", "React", "Node.js", "Portfolio"],
+  authors: [{ name: "Mohamed Bishr" }],
+  openGraph: {
+    title: "Mohamed Bishr | Senior Software Engineer",
+    description: "Professional portfolio showcasing full-stack development expertise.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -43,24 +51,17 @@ export default function RootLayout({
     <html lang="en" className="dark scroll-smooth">
       <body
         suppressHydrationWarning
-        className={`${spaceGrotesk.variable} ${inter.variable} antialiased bg-black text-white stars-container `}
+        className={`${outfit.variable} ${dmSans.variable} antialiased min-h-screen`}
       >
-        {/* <div id="stars"></div>
-        <div id="stars2"></div>
-        <div id="stars3"></div> */}
         <ParticlesBackgroundComponent />
+        <ScrollProgress />
         <BackgroundMusic />
         <Navbar />
-        {children}
-
-        {/* <div id="stars"></div>
-        <div id="stars2"></div>
-        <div id="stars3"></div> */}
-
+        <div className="relative z-10">
+          {children}
+        </div>
+        <Footer />
         <ScrollToTop />
-        {/* <div id="stars"></div>
-        <div id="stars2"></div>
-        <div id="stars3"></div> */}
       </body>
     </html>
   );

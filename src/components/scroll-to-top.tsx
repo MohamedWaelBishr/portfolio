@@ -2,14 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { ArrowUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function ScrollToTop() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     const toggleVisibility = () => {
-      // Show button when page is scrolled past the hero section
       setIsVisible(window.scrollY > window.innerHeight);
     };
 
@@ -24,17 +23,21 @@ export function ScrollToTop() {
     });
   };
 
-  if (!isVisible) return null;
-
   return (
-    <Button
-      variant="outline"
-      size="icon"
-      title="Scroll to Top"
-      className="hidden md:flex bg-gray-200 bg-opacity-25 p-2 fixed bottom-16 right-4 z-50 rounded-full opacity-90 hover:opacity-100 transition-opacity translate-x-1/2 animate-bounce cursor-pointer"
-      onClick={scrollToTop}
-    >
-      <ArrowUp className="h-4 w-4" />
-    </Button>
+    <AnimatePresence>
+      {isVisible && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.8, y: 20 }}
+          transition={{ duration: 0.2 }}
+          onClick={scrollToTop}
+          className="hidden md:flex fixed bottom-8 right-8 z-50 w-12 h-12 rounded-full items-center justify-center glass hover:bg-white/[0.08] border border-white/[0.1] hover:border-primary/50 transition-all duration-300 group"
+          title="Scroll to top"
+        >
+          <ArrowUp className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+        </motion.button>
+      )}
+    </AnimatePresence>
   );
 }

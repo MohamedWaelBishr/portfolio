@@ -42,7 +42,7 @@ export function Footer() {
   return (
     <footer className="relative border-t border-white/[0.05] bg-background/50 backdrop-blur-sm">
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-primary/[0.02] to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-t from-white/[0.02] to-transparent pointer-events-none" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-3 gap-12 mb-12">
@@ -70,7 +70,7 @@ export function Footer() {
                 <button
                   key={link.name}
                   onClick={() => handleClick(link.href)}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors text-left py-1"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors text-left py-1"
                 >
                   {link.name}
                 </button>
@@ -90,10 +90,11 @@ export function Footer() {
                   href={link.href}
                   target={link.href.startsWith("mailto") ? undefined : "_blank"}
                   rel="noopener noreferrer"
-                  className="group p-3 rounded-xl glass-subtle hover:bg-white/[0.08] transition-all duration-300"
+                  className="icon-tile group h-11 w-11 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.08]"
                   title={link.label}
+                  aria-label={link.label}
                 >
-                  <link.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                  <link.icon className="w-5 h-5 text-muted-foreground group-hover:text-foreground transition-colors" />
                 </a>
               ))}
             </div>
@@ -107,16 +108,16 @@ export function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8 border-t border-white/[0.05]">
           <p className="text-sm text-muted-foreground flex items-center gap-1">
             © {new Date().getFullYear()} Mohamed Bishr. Built with
-            <Heart className="w-4 h-4 text-red-500 fill-red-500 inline" />
+            <Heart className="w-4 h-4 text-muted-foreground fill-muted-foreground inline" />
             using Next.js
           </p>
           
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="group flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
+            className="group flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             Back to top
-            <div className="p-1 rounded-lg bg-muted/50 group-hover:bg-primary/10 transition-colors">
+            <div className="p-1 rounded-lg bg-muted/50 group-hover:bg-white/10 transition-colors">
               <ArrowUp className="w-4 h-4" />
             </div>
           </button>

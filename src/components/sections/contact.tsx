@@ -1,22 +1,24 @@
 "use client";
 
 import { useState } from "react";
-import emailjs from "@emailjs/browser";
 import { motion } from "framer-motion";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { TermsModal } from "@/components/terms-modal";
-import { 
-  Mail, 
-  Send, 
-  Github, 
-  Linkedin, 
-  MapPin, 
+import { SectionHeading } from "@/components/ui/section-heading";
+import {
+  Mail,
+  Send,
+  Github,
+  Linkedin,
+  MapPin,
   Loader2,
   CheckCircle,
-  MessageSquare
+  MessageSquare,
+  AlertCircle,
 } from "lucide-react";
 
 const contactInfo = [
@@ -46,14 +48,8 @@ const contactInfo = [
   },
 ];
 
-// Glassmorphism card style
-const glassCardStyle = {
-  background: "rgba(255, 255, 255, 0.03)",
-  backdropFilter: "blur(20px)",
-  WebkitBackdropFilter: "blur(20px)",
-  border: "1px solid rgba(255, 255, 255, 0.08)",
-  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
-};
+const fieldClass =
+  "h-11 rounded-xl border-white/[0.08] bg-white/[0.03] backdrop-blur-sm transition-colors duration-300 placeholder:text-muted-foreground/50 focus-visible:border-white/30 focus-visible:ring-1 focus-visible:ring-white/20 focus-visible:ring-offset-0";
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -66,18 +62,23 @@ export function ContactSection() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [isAgreed, setIsAgreed] = useState(false);
   const [isTermsOpen, setIsTermsOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
     if (!isAgreed) {
-      alert("Please agree to the Terms & Conditions");
+      setError("Please accept the Terms & Conditions before sending.");
       return;
     }
 
     setIsSubmitting(true);
 
     try {
+      // Loaded on submit so the mail SDK stays out of the initial bundle
+      const { default: emailjs } = await import("@emailjs/browser");
+
       await emailjs.send(
         process.env.NEXT_PUBLIC_SERVICE_ID!,
         process.env.NEXT_PUBLIC_TEMPLATE_ID!,
@@ -87,104 +88,95 @@ export function ContactSection() {
       setIsSuccess(true);
       setFormData({ name: "", phone: "", message: "", email: "" });
       setIsAgreed(false);
-      setTimeout(() => setIsSuccess(false), 5000);
-    } catch (error) {
-      console.error("Error sending email:", error);
-      alert("Failed to send message. Please try again.");
+      setTimeout(() => setIsSuccess(false), 6000);
+    } catch (err) {
+      console.error("Error sending email:", err);
+      setError(
+        "Message could not be sent. Email mohamedwaelbishr@gmail.com directly and it will reach me."
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <section className="py-24" id="contact">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.6 }}
-      >
-        {/* Section Header */}
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-12 h-px bg-gradient-to-r from-primary to-transparent" />
-          <span className="text-primary text-sm font-medium uppercase tracking-widest">Connect</span>
-        </div>
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Get In Touch</h2>
-        <p className="text-muted-foreground max-w-2xl mb-12">
-          Have a project in mind or want to discuss opportunities? 
-          I&apos;m always open to new ideas and collaborations.
-        </p>
-      </motion.div>
+    <section className="py-24 md:py-28" id="contact">
+      <SectionHeading
+        eyebrow="Connect"
+        title="Get In Touch"
+        description="Have a project in mind or want to discuss opportunities? I'm always open to new ideas and collaborations."
+        className="mb-12"
+      />
 
-      <div className="grid lg:grid-cols-5 gap-12">
+      <div className="grid gap-6 lg:grid-cols-5 lg:gap-8">
         {/* Contact Info */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="lg:col-span-2 space-y-6"
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] as const }}
+          className="flex flex-col gap-6 lg:col-span-2"
         >
-          <div 
-            className="rounded-2xl p-6 transition-all duration-500 hover:bg-white/[0.05] hover:border-white/[0.12]"
-            style={glassCardStyle}
-          >
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 rounded-xl bg-primary/10 backdrop-blur-sm">
-                <MessageSquare className="w-5 h-5 text-primary" />
+          <div className="glass-panel glass-panel--interactive p-6">
+            <div className="mb-5 flex items-center gap-3">
+              <span className="icon-tile h-10 w-10">
+                <MessageSquare className="h-[18px] w-[18px] text-foreground/75" aria-hidden="true" />
+              </span>
+              <div>
+                <h3 className="text-base font-semibold leading-tight">Let&apos;s Connect</h3>
+                <p className="text-xs text-muted-foreground">Replies within 24 hours</p>
               </div>
-              <h3 className="text-lg font-semibold">Let&apos;s Connect</h3>
             </div>
 
-            <div className="space-y-4">
-              {contactInfo.map((item) => (
-                <div key={item.label} className="group">
-                  {item.href ? (
-                    <a
-                      href={item.href}
-                      target={item.href.startsWith("mailto") ? undefined : "_blank"}
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/[0.03] transition-all duration-300"
-                    >
-                      <div className="p-2 rounded-lg bg-white/[0.05] backdrop-blur-sm group-hover:bg-primary/10 transition-colors">
-                        <item.icon className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">{item.label}</p>
-                        <p className="text-sm font-medium group-hover:text-primary transition-colors">
-                          {item.value}
-                        </p>
-                      </div>
-                    </a>
-                  ) : (
-                    <div className="flex items-center gap-4 p-3">
-                      <div className="p-2 rounded-lg bg-white/[0.05] backdrop-blur-sm">
-                        <item.icon className="w-4 h-4 text-muted-foreground" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-muted-foreground">{item.label}</p>
-                        <p className="text-sm font-medium">{item.value}</p>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
+            <ul className="divide-y divide-white/[0.05]">
+              {contactInfo.map((item) => {
+                const content = (
+                  <>
+                    <span className="icon-tile h-9 w-9 group-hover:border-white/20 group-hover:bg-white/[0.08]">
+                      <item.icon
+                        className="h-4 w-4 text-muted-foreground transition-colors duration-300 group-hover:text-foreground"
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[11px] uppercase tracking-[0.12em] text-muted-foreground/70">
+                        {item.label}
+                      </span>
+                      <span className="block truncate text-sm font-medium transition-colors duration-300 group-hover:text-foreground">
+                        {item.value}
+                      </span>
+                    </span>
+                  </>
+                );
+
+                return (
+                  <li key={item.label} className="py-1.5 first:pt-0 last:pb-0">
+                    {item.href ? (
+                      <a
+                        href={item.href}
+                        target={item.href.startsWith("mailto") ? undefined : "_blank"}
+                        rel="noopener noreferrer"
+                        className="group flex items-center gap-3.5 rounded-xl p-2.5 transition-colors duration-300 hover:bg-white/[0.04]"
+                      >
+                        {content}
+                      </a>
+                    ) : (
+                      <div className="group flex items-center gap-3.5 p-2.5">{content}</div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
 
           {/* Availability status */}
-          <div 
-            className="rounded-2xl p-6 transition-all duration-500 hover:bg-white/[0.05] hover:border-white/[0.12]"
-            style={glassCardStyle}
-          >
-            <div className="flex items-center gap-3">
-              <span className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
-              </span>
-              <span className="text-sm text-muted-foreground">
-                Currently available for new opportunities
-              </span>
+          <div className="glass-panel glass-panel--interactive flex items-center gap-3 p-6">
+            <span className="status-dot text-foreground/80" />
+            <div>
+              <p className="text-sm font-medium">Currently available</p>
+              <p className="text-xs text-muted-foreground">
+                Open to full-time roles and freelance work
+              </p>
             </div>
           </div>
         </motion.div>
@@ -193,36 +185,34 @@ export function ContactSection() {
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6, delay: 0.15, ease: [0.16, 1, 0.3, 1] as const }}
           className="lg:col-span-3"
         >
-          <form 
-            onSubmit={handleSubmit} 
-            className="rounded-2xl p-6 transition-all duration-500"
-            style={glassCardStyle}
-          >
+          <form onSubmit={handleSubmit} className="glass-panel h-full p-6 md:p-7">
             {isSuccess ? (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <div className="w-16 h-16 rounded-full bg-green-500/10 backdrop-blur-sm flex items-center justify-center mb-4">
-                  <CheckCircle className="w-8 h-8 text-green-500" />
-                </div>
-                <h3 className="text-xl font-semibold mb-2">Message Sent!</h3>
-                <p className="text-muted-foreground">
-                  Thank you for reaching out. I&apos;ll get back to you soon.
+              <div className="flex h-full flex-col items-center justify-center py-14 text-center">
+                <span className="mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-white/[0.12] bg-white/[0.05]">
+                  <CheckCircle className="h-8 w-8 text-foreground" aria-hidden="true" />
+                </span>
+                <h3 className="mb-2 text-xl font-semibold">Message sent</h3>
+                <p className="max-w-sm text-sm text-muted-foreground">
+                  Thanks for reaching out — I&apos;ll get back to you within a day.
                 </p>
               </div>
             ) : (
-              <div className="space-y-6">
-                <div className="grid sm:grid-cols-2 gap-6">
+              <div className="flex flex-col gap-5">
+                <div className="grid gap-5 sm:grid-cols-2">
                   <div className="space-y-2">
                     <Label htmlFor="name" className="text-sm font-medium">
                       Name
                     </Label>
                     <Input
                       id="name"
+                      name="name"
+                      autoComplete="name"
                       placeholder="Your name"
-                      className="bg-white/[0.03] backdrop-blur-sm border-white/[0.1] focus:border-primary/50 transition-colors"
+                      className={fieldClass}
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
@@ -234,9 +224,11 @@ export function ContactSection() {
                     </Label>
                     <Input
                       id="email"
+                      name="email"
                       type="email"
+                      autoComplete="email"
                       placeholder="your@email.com"
-                      className="bg-white/[0.03] backdrop-blur-sm border-white/[0.1] focus:border-primary/50 transition-colors"
+                      className={fieldClass}
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
@@ -250,8 +242,11 @@ export function ContactSection() {
                   </Label>
                   <Input
                     id="phone"
+                    name="phone"
+                    type="tel"
+                    autoComplete="tel"
                     placeholder="Your phone number"
-                    className="bg-white/[0.03] backdrop-blur-sm border-white/[0.1] focus:border-primary/50 transition-colors"
+                    className={fieldClass}
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                   />
@@ -261,11 +256,12 @@ export function ContactSection() {
                   <Label htmlFor="message" className="text-sm font-medium">
                     Message
                   </Label>
-                  <textarea
+                  <Textarea
                     id="message"
-                    rows={4}
+                    name="message"
+                    rows={5}
                     placeholder="Tell me about your project..."
-                    className="w-full px-4 py-3 rounded-lg bg-white/[0.03] backdrop-blur-sm border border-white/[0.1] focus:border-primary/50 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-all resize-none"
+                    className="min-h-[132px] resize-none rounded-xl border-white/[0.08] bg-white/[0.03] px-4 py-3 backdrop-blur-sm transition-colors duration-300 placeholder:text-muted-foreground/50 focus-visible:border-white/30 focus-visible:ring-1 focus-visible:ring-white/20 focus-visible:ring-offset-0"
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     required
@@ -276,38 +272,53 @@ export function ContactSection() {
                   <Checkbox
                     id="agreement"
                     checked={isAgreed}
-                    onCheckedChange={(checked) => setIsAgreed(checked as boolean)}
+                    onCheckedChange={(checked) => {
+                      setIsAgreed(checked as boolean);
+                      if (checked) setError(null);
+                    }}
                     className="mt-0.5"
                   />
                   <Label
                     htmlFor="agreement"
-                    className="text-sm text-muted-foreground font-normal cursor-pointer"
+                    className="cursor-pointer text-sm font-normal leading-relaxed text-muted-foreground"
                   >
                     I agree to the{" "}
                     <button
                       type="button"
                       onClick={() => setIsTermsOpen(true)}
-                      className="text-primary hover:underline"
+                      className="text-foreground underline-offset-4 hover:underline"
                     >
-                      Terms & Conditions
+                      Terms &amp; Conditions
                     </button>
                   </Label>
+                </div>
+
+                <div aria-live="polite">
+                  {error && (
+                    <p className="flex items-start gap-2 rounded-xl border border-destructive/25 bg-destructive/10 p-3 text-sm text-destructive">
+                      <AlertCircle
+                        className="mt-0.5 h-4 w-4 flex-shrink-0"
+                        aria-hidden="true"
+                      />
+                      {error}
+                    </p>
+                  )}
                 </div>
 
                 <Button
                   type="submit"
                   size="lg"
-                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 gap-2"
+                  className="h-12 w-full gap-2 bg-primary text-primary-foreground shadow-[0_10px_34px_rgba(0,0,0,0.55)] transition-all duration-300 hover:bg-foreground"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                       Sending...
                     </>
                   ) : (
                     <>
-                      <Send className="w-4 h-4" />
+                      <Send className="h-4 w-4" aria-hidden="true" />
                       Send Message
                     </>
                   )}

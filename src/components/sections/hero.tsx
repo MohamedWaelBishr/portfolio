@@ -1,9 +1,9 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Github, Linkedin, Mail, Download, ArrowRight } from "lucide-react";
+import { Github, Linkedin, Mail, Download, ArrowRight, MapPin } from "lucide-react";
 import { motion } from "framer-motion";
 
 const containerVariants = {
@@ -11,18 +11,18 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.15,
-      delayChildren: 0.2,
+      staggerChildren: 0.12,
+      delayChildren: 0.15,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const },
+    transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -51,67 +51,49 @@ const highlights = [
   "Delivering user-centric software solutions",
 ];
 
-// Glassmorphism card style
-const glassCardStyle = {
-  background: "rgba(255, 255, 255, 0.03)",
-  backdropFilter: "blur(20px)",
-  WebkitBackdropFilter: "blur(20px)",
-  border: "1px solid rgba(255, 255, 255, 0.08)",
-  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
-};
-
-const glassSubtleStyle = {
-  background: "rgba(255, 255, 255, 0.02)",
-  backdropFilter: "blur(12px)",
-  WebkitBackdropFilter: "blur(12px)",
-  border: "1px solid rgba(255, 255, 255, 0.05)",
-};
+const RESUME_URL =
+  "https://drive.google.com/uc?export=download&id=1V3tUAtqvv3fcgBubj-M06MFee0ISkbZi";
 
 export function HeroSection() {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   const handleScroll = useCallback(() => {
-    window.scrollTo({
-      top: window.innerHeight,
-      behavior: "smooth",
-    });
+    document
+      .querySelector("#skills")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, []);
 
-  if (!isMounted) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  const scrollToContact = useCallback(() => {
+    document
+      .querySelector("#contact")
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
 
   return (
-    <section id="home" className="min-h-screen flex flex-col justify-center relative py-20">
+    <section
+      id="home"
+      className="relative flex min-h-screen flex-col justify-center py-24 md:py-28"
+    >
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20"
+        className="flex flex-col items-center justify-between gap-14 lg:flex-row lg:gap-20"
       >
         {/* Content Side */}
-        <div className="flex-1 space-y-8 text-center lg:text-left order-2 lg:order-1">
+        <div className="order-2 flex-1 space-y-8 text-center lg:order-1 lg:text-left">
           {/* Status Badge */}
-          <motion.div variants={itemVariants} className="inline-flex items-center gap-2">
-            <span className="relative flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
+          <motion.div variants={itemVariants} className="flex justify-center lg:justify-start">
+            <span className="glass-subtle inline-flex items-center gap-2.5 rounded-full py-1.5 pl-3 pr-4">
+              <span className="status-dot text-foreground/80" />
+              <span className="text-[13px] font-medium text-muted-foreground">
+                Available for opportunities
+              </span>
             </span>
-            <span className="text-sm text-muted-foreground">Available for opportunities</span>
           </motion.div>
 
           {/* Name */}
           <motion.h1
             variants={itemVariants}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight"
+            className="text-[2.75rem] font-bold leading-[0.95] tracking-[-0.04em] sm:text-6xl md:text-7xl lg:text-[5.25rem]"
           >
             <span className="text-foreground">Mohamed</span>
             <br />
@@ -119,57 +101,58 @@ export function HeroSection() {
           </motion.h1>
 
           {/* Title */}
-          <motion.p
+          <motion.div
             variants={itemVariants}
-            className="text-xl md:text-2xl text-muted-foreground font-medium"
+            className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:justify-start"
           >
-            Senior Software Engineer
-          </motion.p>
+            <p className="text-xl font-medium text-foreground/90 md:text-2xl">
+              Senior Software Engineer
+            </p>
+            <span className="hidden h-4 w-px bg-white/10 sm:block" />
+            <span className="inline-flex items-center gap-1.5 text-sm text-muted-foreground">
+              <MapPin className="h-3.5 w-3.5" aria-hidden="true" />
+              Egypt · Remote
+            </span>
+          </motion.div>
 
           {/* Highlights */}
-          <motion.div 
-            variants={itemVariants} 
-            className="max-w-xl mx-auto lg:mx-0 rounded-2xl p-6"
-            style={glassCardStyle}
+          <motion.div
+            variants={itemVariants}
+            className="glass-panel glass-panel--interactive mx-auto max-w-xl p-6 lg:mx-0"
           >
-            <div className="space-y-3">
-              {highlights.map((highlight, index) => (
-                <div key={index} className="flex items-center gap-3 text-sm md:text-base">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+            <ul className="divide-y divide-white/[0.05]">
+              {highlights.map((highlight) => (
+                <li
+                  key={highlight}
+                  className="flex items-center gap-3 py-2.5 text-left text-sm first:pt-0 last:pb-0 md:text-[15px]"
+                >
+                  <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-foreground/70" />
                   <span className="text-muted-foreground">{highlight}</span>
-                </div>
+                </li>
               ))}
-            </div>
+            </ul>
           </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
             variants={itemVariants}
-            className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start"
+            className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center lg:justify-start"
           >
             <Button
               size="lg"
-              className="group bg-primary text-primary-foreground hover:bg-primary/90 px-8 gap-2"
-              onClick={() => {
-                const el = document.querySelector("#contact");
-                el?.scrollIntoView({ behavior: "smooth" });
-              }}
+              className="group h-12 w-full gap-2 bg-primary px-8 text-primary-foreground shadow-[0_10px_34px_rgba(0,0,0,0.55)] transition-all duration-300 hover:bg-foreground sm:w-auto"
+              onClick={scrollToContact}
             >
               Get in Touch
-              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
             </Button>
             <Button
               variant="outline"
               size="lg"
-              className="gap-2 border-white/10 bg-white/[0.03] backdrop-blur-sm hover:border-primary/50 hover:bg-primary/5"
-              onClick={() =>
-                window.open(
-                  "https://drive.google.com/uc?export=download&id=1V3tUAtqvv3fcgBubj-M06MFee0ISkbZi",
-                  "_blank"
-                )
-              }
+              className="h-12 w-full gap-2 border-white/10 bg-white/[0.03] backdrop-blur-sm transition-all duration-300 hover:border-white/25 hover:bg-white/[0.06] hover:text-foreground sm:w-auto"
+              onClick={() => window.open(RESUME_URL, "_blank", "noopener,noreferrer")}
             >
-              <Download className="w-4 h-4" />
+              <Download className="h-4 w-4" />
               Download Resume
             </Button>
           </motion.div>
@@ -177,7 +160,7 @@ export function HeroSection() {
           {/* Social Links */}
           <motion.div
             variants={itemVariants}
-            className="flex items-center gap-4 justify-center lg:justify-start"
+            className="flex items-center justify-center gap-3 lg:justify-start"
           >
             {socialLinks.map((link) => (
               <a
@@ -185,11 +168,13 @@ export function HeroSection() {
                 href={link.href}
                 target={link.href.startsWith("mailto") ? undefined : "_blank"}
                 rel="noopener noreferrer"
-                className="group p-3 rounded-xl transition-all duration-300 hover:bg-white/[0.08]"
-                style={glassSubtleStyle}
-                title={link.label}
+                aria-label={link.label}
+                className="icon-tile group h-11 w-11 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[0.08]"
               >
-                <link.icon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                <link.icon
+                  className="h-[18px] w-[18px] text-muted-foreground transition-colors duration-300 group-hover:text-foreground"
+                  aria-hidden="true"
+                />
               </a>
             ))}
           </motion.div>
@@ -198,35 +183,50 @@ export function HeroSection() {
         {/* Profile Image Side */}
         <motion.div
           variants={itemVariants}
-          className="relative order-1 lg:order-2 flex-shrink-0"
+          className="relative order-1 flex-shrink-0 lg:order-2"
         >
-          {/* Glow effect */}
-          <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/30 via-secondary/20 to-transparent blur-3xl scale-110" />
-          
-          {/* Image container */}
-          <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 lg:w-[420px] lg:h-[420px]">
-            {/* Animated ring */}
-            <div className="absolute inset-0 rounded-full border-2 border-primary/20 animate-pulse" />
-            
-            {/* Inner gradient ring */}
-            <div className="absolute inset-2 rounded-full bg-gradient-to-br from-primary/10 via-transparent to-secondary/10" />
-            
-            {/* Image with glass effect */}
-            <div 
-              className="absolute inset-4 rounded-full overflow-hidden"
+          {/* Ambient glow */}
+          <div
+            className="absolute inset-0 scale-110 rounded-full bg-gradient-to-br from-white/[0.07] via-white/[0.035] to-transparent blur-3xl"
+            aria-hidden="true"
+          />
+
+          <div className="relative h-64 w-64 sm:h-80 sm:w-80 md:h-96 md:w-96 lg:h-[420px] lg:w-[420px]">
+            {/* Slow orbiting accent ring */}
+            <div
+              className="animate-spin-slow absolute inset-0 rounded-full"
               style={{
-                background: "rgba(255, 255, 255, 0.03)",
-                backdropFilter: "blur(20px)",
-                WebkitBackdropFilter: "blur(20px)",
-                border: "1px solid rgba(255, 255, 255, 0.08)",
-                boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                background:
+                  "conic-gradient(from 0deg, transparent 0deg, rgba(255,255,255,0.42) 90deg, transparent 200deg, rgba(255,255,255,0.18) 300deg, transparent 360deg)",
+                WebkitMask:
+                  "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))",
+                mask: "radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px))",
               }}
+              aria-hidden="true"
+            />
+
+            {/* Static hairline ring */}
+            <div
+              className="absolute inset-0 rounded-full border border-white/[0.07]"
+              aria-hidden="true"
+            />
+
+            {/* Inner gradient wash */}
+            <div
+              className="absolute inset-2 rounded-full bg-gradient-to-br from-white/[0.05] via-transparent to-white/[0.02]"
+              aria-hidden="true"
+            />
+
+            {/* Portrait */}
+            <div
+              className="absolute inset-4 overflow-hidden rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl"
+              style={{ boxShadow: "0 8px 32px rgba(0, 0, 0, 0.35)" }}
             >
               <Image
                 src="/assets/profile.png"
-                alt="Mohamed Bishr - Senior Software Engineer"
+                alt="Mohamed Bishr, Senior Software Engineer"
                 fill
-                className="object-cover transition-all duration-700"
+                className="object-cover"
                 priority
                 sizes="(max-width: 640px) 256px, (max-width: 768px) 320px, (max-width: 1024px) 384px, 420px"
               />
@@ -236,22 +236,26 @@ export function HeroSection() {
       </motion.div>
 
       {/* Scroll Indicator */}
-      <motion.div
+      <motion.button
+        type="button"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 1.5, duration: 0.6 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:flex flex-col items-center gap-2 cursor-pointer group"
+        transition={{ delay: 1.4, duration: 0.6 }}
+        className="group absolute bottom-8 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
         onClick={handleScroll}
+        aria-label="Scroll to skills"
       >
-        <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll</span>
-        <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2 group-hover:border-primary/50 transition-colors">
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-            className="w-1.5 h-1.5 rounded-full bg-primary"
+        <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/70">
+          Scroll
+        </span>
+        <span className="flex h-9 w-[22px] items-start justify-center rounded-full border border-white/[0.12] p-1.5 transition-colors duration-300 group-hover:border-white/30">
+          <motion.span
+            animate={{ y: [0, 7, 0], opacity: [1, 0.35, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            className="h-1.5 w-1.5 rounded-full bg-foreground/80"
           />
-        </div>
-      </motion.div>
+        </span>
+      </motion.button>
     </section>
   );
 }

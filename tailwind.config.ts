@@ -77,8 +77,8 @@ export default {
           to: { transform: "translateY(0)", opacity: "1" },
         },
         "pulse-glow": {
-          "0%, 100%": { boxShadow: "0 0 20px hsla(var(--primary) / 0.2)" },
-          "50%": { boxShadow: "0 0 40px hsla(var(--primary) / 0.4)" },
+          "0%, 100%": { boxShadow: "0 0 20px rgba(255, 255, 255, 0.08)" },
+          "50%": { boxShadow: "0 0 40px rgba(255, 255, 255, 0.14)" },
         },
         float: {
           "0%, 100%": { transform: "translateY(0)" },
@@ -94,9 +94,9 @@ export default {
         xs: "2px",
       },
       boxShadow: {
-        "glow-sm": "0 0 20px hsla(var(--primary) / 0.2)",
-        "glow-md": "0 0 40px hsla(var(--primary) / 0.3)",
-        "glow-lg": "0 0 60px hsla(var(--primary) / 0.4)",
+        "glow-sm": "0 0 20px rgba(255, 255, 255, 0.08)",
+        "glow-md": "0 0 40px rgba(255, 255, 255, 0.1)",
+        "glow-lg": "0 0 60px rgba(255, 255, 255, 0.12)",
       },
     },
   },

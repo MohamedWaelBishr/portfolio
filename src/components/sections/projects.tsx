@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Folder, Filter } from "lucide-react";
+import { Folder, Calendar } from "lucide-react";
 
-// Employer companies - projects from these won't have "Freelancing" tag
+// Employer companies — projects from these won't carry the "Freelancing" tag
 const employerCompanies = [
   "Everest Minds",
   "Octane",
@@ -18,11 +17,10 @@ const employerCompanies = [
   "Maggie Medical",
 ];
 
-const isFreelanceProject = (client: string) => {
-  return !employerCompanies.some(
-    (employer) => client.toLowerCase().includes(employer.toLowerCase())
+const isFreelanceProject = (client: string) =>
+  !employerCompanies.some((employer) =>
+    client.toLowerCase().includes(employer.toLowerCase())
   );
-};
 
 const projects = [
   {
@@ -234,149 +232,167 @@ const projects = [
   },
 ];
 
-const categories = ["All", "Front End", "Mobile App", "Full Stack"];
+const categories = ["All", "Front End", "Mobile App", "Full Stack"] as const;
+type Category = (typeof categories)[number];
 
 export function ProjectsSection() {
-  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [selectedCategory, setSelectedCategory] = useState<Category>("All");
+
+  const counts = useMemo(
+    () =>
+      categories.reduce<Record<string, number>>((acc, category) => {
+        acc[category] =
+          category === "All"
+            ? projects.length
+            : projects.filter((p) => p.category.includes(category)).length;
+        return acc;
+      }, {}),
+    []
+  );
 
   const filteredProjects = projects.filter((project) =>
-    selectedCategory === "All"
-      ? true
-      : project.category.includes(selectedCategory)
+    selectedCategory === "All" ? true : project.category.includes(selectedCategory)
   );
 
   return (
-    <section className="py-24" id="projects">
+    <section className="py-24 md:py-28" id="projects">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] as const }}
+        className="flex flex-col gap-4"
       >
         {/* Section Header */}
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-12 h-px bg-gradient-to-r from-primary to-transparent" />
-          <span className="text-primary text-sm font-medium uppercase tracking-widest">Portfolio</span>
+        <div className="flex items-center gap-4">
+          <span className="h-px w-12 bg-gradient-to-r from-primary to-transparent" />
+          <span className="section-eyebrow">Portfolio</span>
         </div>
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Featured Projects</h2>
-        <p className="text-muted-foreground max-w-2xl mb-8">
-          A collection of {projects.length} projects spanning healthcare, enterprise, fintech, and consumer applications. 
-          Each built with modern technologies and a focus on user experience.
+
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between md:gap-8">
+          <h2 className="section-title max-w-2xl">Featured Projects</h2>
+          <p className="tabular text-sm text-muted-foreground md:pb-1">
+            <span className="text-foreground">{filteredProjects.length}</span> of{" "}
+            {projects.length} shown
+          </p>
+        </div>
+
+        <p className="section-lede">
+          A collection of {projects.length} projects spanning healthcare, enterprise, fintech,
+          and consumer applications. Each built with modern technologies and a focus on user
+          experience.
         </p>
 
         {/* Category Filters */}
-        <div className="flex flex-wrap items-center gap-3 mb-12">
-          <Filter className="w-4 h-4 text-muted-foreground" />
-          {categories.map((category) => (
-            <Button
-              key={category}
-              variant={selectedCategory === category ? "default" : "outline"}
-              size="sm"
-              className={`rounded-full transition-all duration-300 ${
-                selectedCategory === category
-                  ? "bg-primary text-primary-foreground shadow-glow-sm"
-                  : "border-white/10 bg-white/[0.03] backdrop-blur-sm hover:border-primary/50 hover:bg-primary/5"
-              }`}
-              onClick={() => setSelectedCategory(category)}
-            >
-              {category}
-              {selectedCategory === category && (
-                <span className="ml-2 text-xs opacity-70">
-                  ({filteredProjects.length})
+        <div
+          className="mt-4 flex flex-wrap items-center gap-2"
+          role="group"
+          aria-label="Filter projects by discipline"
+        >
+          {categories.map((category) => {
+            const isActive = selectedCategory === category;
+            return (
+              <button
+                key={category}
+                type="button"
+                onClick={() => setSelectedCategory(category)}
+                aria-pressed={isActive}
+                className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-300 ${
+                  isActive
+                    ? "bg-primary text-primary-foreground shadow-[0_6px_22px_rgba(0,0,0,0.5)]"
+                    : "border border-white/[0.08] bg-white/[0.03] text-muted-foreground backdrop-blur-sm hover:border-white/20 hover:bg-white/[0.06] hover:text-foreground"
+                }`}
+              >
+                {category}
+                <span
+                  className={`tabular text-[11px] ${
+                    isActive ? "text-primary-foreground/70" : "text-muted-foreground/60"
+                  }`}
+                >
+                  {counts[category]}
                 </span>
-              )}
-            </Button>
-          ))}
+              </button>
+            );
+          })}
         </div>
       </motion.div>
 
       {/* Projects Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="mt-10 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         <AnimatePresence mode="sync">
           {filteredProjects.map((project, index) => {
             const isFreelance = isFreelanceProject(project.client);
-            
+
             return (
-              <motion.div
+              <motion.article
                 key={project.title}
+                layout
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.3, delay: index * 0.03 }}
-                layout
-                className={`group relative overflow-hidden rounded-2xl p-6 
-                  bg-white/[0.03] backdrop-blur-xl border border-white/[0.08]
-                  hover:bg-white/[0.06] hover:border-white/[0.15]
-                  transition-all duration-500
-                  ${isFreelance ? "ring-1 ring-secondary/20" : ""}
-                `}
-                style={{
-                  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
+                exit={{ opacity: 0, y: -12 }}
+                transition={{
+                  duration: 0.35,
+                  delay: Math.min(index * 0.025, 0.3),
+                  ease: [0.16, 1, 0.3, 1],
                 }}
+                className="glass-panel glass-panel--interactive group flex flex-col overflow-hidden p-6"
               >
-                {/* Freelancing indicator */}
-                {isFreelance && (
-                  <div className="absolute top-4 right-4">
-                    <span className="text-[10px] uppercase tracking-wider text-secondary font-medium px-2 py-1 rounded-full bg-secondary/10 backdrop-blur-sm">
-                      Freelancing
-                    </span>
-                  </div>
-                )}
+                {/* Header row: icon + status */}
+                <div className="mb-4 flex items-start justify-between gap-3">
+                  <span className="icon-tile h-11 w-11 group-hover:scale-105">
+                    <Folder className="h-5 w-5 text-foreground/75" aria-hidden="true" />
+                  </span>
 
-                {/* Icon */}
-                <div className="mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 backdrop-blur-sm flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <Folder className="w-6 h-6 text-primary" />
-                  </div>
+                  {isFreelance && (
+                    <span className="rounded-full border border-white/[0.1] bg-white/[0.05] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.1em] text-muted-foreground">
+                      Freelance
+                    </span>
+                  )}
                 </div>
 
-                {/* Content */}
-                <h3 className="text-lg font-semibold mb-1 group-hover:text-primary transition-colors">
+                {/* Title */}
+                <h3 className="text-[17px] font-semibold leading-snug">
                   {project.title}
                 </h3>
-                
+
                 {/* Client & Period */}
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs text-muted-foreground/70">{project.client}</span>
-                  <span className="text-muted-foreground/30">•</span>
-                  <span className="text-xs text-muted-foreground/70">{project.period}</span>
+                <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground/70">
+                  <span className="truncate">{project.client}</span>
+                  <span className="text-muted-foreground/30" aria-hidden="true">
+                    •
+                  </span>
+                  <span className="tabular inline-flex items-center gap-1.5">
+                    <Calendar className="h-3 w-3" aria-hidden="true" />
+                    {project.period}
+                  </span>
                 </div>
-                
-                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
+
+                <p className="mt-3 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
                   {project.description}
                 </p>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-2 mt-auto">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs px-2.5 py-1 rounded-full bg-white/[0.05] backdrop-blur-sm border border-white/[0.08] text-muted-foreground"
-                    >
+                <ul className="mt-auto flex flex-wrap gap-2 pt-5">
+                  {project.tags.slice(0, 3).map((tag) => (
+                    <li key={tag} className="tag-chip">
                       {tag}
-                    </span>
+                    </li>
                   ))}
-                </div>
+                  {project.tags.length > 3 && (
+                    <li className="tag-chip">+{project.tags.length - 3}</li>
+                  )}
+                </ul>
 
-                {/* Hover gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/[0.08] via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none rounded-2xl" />
-              </motion.div>
+                {/* Hover accent */}
+                <span
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/[0.045] to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                  aria-hidden="true"
+                />
+              </motion.article>
             );
           })}
         </AnimatePresence>
       </div>
-
-      {/* Projects count */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        className="text-center mt-12"
-      >
-        <p className="text-sm text-muted-foreground">
-          Showing {filteredProjects.length} of {projects.length} projects
-        </p>
-      </motion.div>
     </section>
   );
 }

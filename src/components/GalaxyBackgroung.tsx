@@ -46,12 +46,12 @@ function Particles() {
     <Points ref={pointsRef} positions={particles}>
       <PointMaterial
         transparent
-        color="#00d4ff"
+        color="#e8eaec"
         size={0.06}
         sizeAttenuation={true}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
-        opacity={0.6}
+        opacity={0.42}
       />
     </Points>
   );
@@ -83,12 +83,12 @@ function SecondaryParticles() {
     <Points ref={pointsRef} positions={particles}>
       <PointMaterial
         transparent
-        color="#a855f7"
+        color="#9aa0a6"
         size={0.04}
         sizeAttenuation={true}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
-        opacity={0.4}
+        opacity={0.3}
       />
     </Points>
   );
@@ -116,7 +116,7 @@ export default function ParticlesBackground() {
           <Bloom
             luminanceThreshold={0.2}
             luminanceSmoothing={0.9}
-            intensity={1.5}
+            intensity={0.75}
           />
         </EffectComposer>
       </Suspense>

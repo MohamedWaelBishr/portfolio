@@ -1,55 +1,57 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Briefcase, Calendar, ChevronRight } from "lucide-react";
+import { Briefcase, Calendar, ChevronRight, MapPin } from "lucide-react";
+import { SectionHeading } from "@/components/ui/section-heading";
 
-// Helper function to format month name
 const monthNames = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
 ];
 
-// Helper function to calculate duration between two dates
 function calculateDuration(startDate: Date, endDate: Date): string {
   let months = (endDate.getFullYear() - startDate.getFullYear()) * 12;
   months += endDate.getMonth() - startDate.getMonth();
-  
-  // Add 1 to include the current month
-  months += 1;
-  
+  months += 1; // include the current month
+
   if (months < 0) months = 0;
-  
+
   const years = Math.floor(months / 12);
   const remainingMonths = months % 12;
-  
+
   if (years === 0) {
-    return `${remainingMonths} mo${remainingMonths !== 1 ? 's' : ''}`;
-  } else if (remainingMonths === 0) {
-    return `${years} yr${years !== 1 ? 's' : ''}`;
-  } else {
-    return `${years} yr${years !== 1 ? 's' : ''} ${remainingMonths} mo${remainingMonths !== 1 ? 's' : ''}`;
+    return `${remainingMonths} mo${remainingMonths !== 1 ? "s" : ""}`;
   }
+  if (remainingMonths === 0) {
+    return `${years} yr${years !== 1 ? "s" : ""}`;
+  }
+  return `${years} yr${years !== 1 ? "s" : ""} ${remainingMonths} mo${
+    remainingMonths !== 1 ? "s" : ""
+  }`;
 }
 
-// Helper function to format period string
 function formatPeriod(startDate: Date, endDate: Date | null): string {
   const startStr = `${monthNames[startDate.getMonth()]} ${startDate.getFullYear()}`;
-  
-  if (!endDate) {
-    return `${startStr} - Present`;
-  }
-  
-  const endStr = `${monthNames[endDate.getMonth()]} ${endDate.getFullYear()}`;
-  return `${startStr} - ${endStr}`;
+  if (!endDate) return `${startStr} - Present`;
+  return `${startStr} - ${monthNames[endDate.getMonth()]} ${endDate.getFullYear()}`;
 }
 
-// Experience data with date objects for dynamic calculation
+function monogram(company: string): string {
+  // "City Data Services (CDS)" carries its own short form — use it
+  const acronym = company.match(/\(([A-Za-z]{2,4})\)/);
+  if (acronym) return acronym[1].toUpperCase();
+
+  const words = company.replace(/\(.*?\)/g, "").trim().split(/\s+/);
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return (words[0][0] + words[1][0]).toUpperCase();
+}
+
 const experiencesData = [
   {
     company: "City Data Services (CDS)",
     position: "Senior Software Engineer",
-    startDate: new Date(2025, 10), // Nov 2025 (month is 0-indexed)
-    endDate: null, // null means current/present
+    startDate: new Date(2025, 10), // Nov 2025
+    endDate: null,
     location: "Remote",
     description:
       "Developing and maintaining web applications and backend systems using a diverse technology stack, contributing to data-driven solutions and enterprise software development.",
@@ -64,8 +66,8 @@ const experiencesData = [
   {
     company: "iTechs EG",
     position: "Team Leader / Senior Software Engineer",
-    startDate: new Date(2024, 7), // Aug 2024 (month is 0-indexed)
-    endDate: null, // null means current/present
+    startDate: new Date(2024, 7), // Aug 2024
+    endDate: null,
     location: "Egypt",
     description:
       "Leading development teams in building enterprise-grade applications, overseeing technical architecture decisions, and mentoring junior developers while maintaining hands-on coding responsibilities.",
@@ -140,132 +142,150 @@ const experiencesData = [
   },
 ];
 
-// Process experiences with calculated period and duration
 const experiences = experiencesData.map((exp) => {
-  const now = new Date();
-  const endDate = exp.endDate || now;
-  
+  const endDate = exp.endDate ?? new Date();
   return {
     ...exp,
     period: formatPeriod(exp.startDate, exp.endDate),
     duration: calculateDuration(exp.startDate, endDate),
     current: exp.endDate === null,
+    initials: monogram(exp.company),
   };
 });
 
-// Glassmorphism card style
-const glassCardStyle = {
-  background: "rgba(255, 255, 255, 0.03)",
-  backdropFilter: "blur(20px)",
-  WebkitBackdropFilter: "blur(20px)",
-  border: "1px solid rgba(255, 255, 255, 0.08)",
-  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
-};
-
 export function ExperienceSection() {
   return (
-    <section className="py-24" id="experience">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.6 }}
-      >
-        {/* Section Header */}
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-12 h-px bg-gradient-to-r from-primary to-transparent" />
-          <span className="text-primary text-sm font-medium uppercase tracking-widest">Career</span>
-        </div>
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Professional Experience</h2>
-        <p className="text-muted-foreground max-w-2xl mb-12">
-          A journey through various roles in software engineering, from telecommunications 
-          to healthcare and fintech, building expertise across the full stack.
-        </p>
-      </motion.div>
+    <section className="py-24 md:py-28" id="experience">
+      <SectionHeading
+        eyebrow="Career"
+        title="Professional Experience"
+        description="A journey through various roles in software engineering, from telecommunications to healthcare and fintech, building expertise across the full stack."
+        className="mb-14"
+      />
 
       {/* Timeline */}
       <div className="relative">
-        {/* Timeline line */}
-        <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-primary via-secondary to-transparent md:-translate-x-1/2" />
+        {/* Rail */}
+        <div
+          className="timeline-rail absolute bottom-0 left-2 top-0 w-px md:left-1/2 md:-translate-x-1/2"
+          aria-hidden="true"
+        />
 
         {experiences.map((exp, index) => (
           <motion.div
-            key={index}
-            initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+            key={`${exp.company}-${exp.period}`}
+            initial={{ opacity: 0, x: index % 2 === 0 ? -24 : 24 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] as const }}
-            className={`relative flex flex-col md:flex-row gap-8 mb-12 ${
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] as const }}
+            className={`relative mb-10 flex flex-col gap-6 md:mb-12 md:flex-row md:gap-8 ${
               index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
             }`}
           >
-            {/* Timeline dot */}
-            <div className="absolute left-0 md:left-1/2 w-4 h-4 -translate-x-1/2 top-8">
-              <div className={`w-4 h-4 rounded-full border-2 ${
-                exp.current 
-                  ? "border-primary bg-primary animate-pulse" 
-                  : "border-muted-foreground/50 bg-background"
-              }`} />
-            </div>
+            {/* Node */}
+            <span
+              className="absolute left-0 top-7 z-10 flex h-4 w-4 items-center justify-center md:left-1/2 md:-translate-x-1/2"
+              aria-hidden="true"
+            >
+              <span
+                className={`h-3.5 w-3.5 rounded-full border-2 bg-background transition-colors ${
+                  exp.current
+                    ? "border-foreground bg-foreground shadow-[0_0_12px_rgba(255,255,255,0.3)]"
+                    : "border-muted-foreground/40"
+                }`}
+              />
+            </span>
 
-            {/* Date section */}
-            <div className={`md:w-1/2 ${index % 2 === 0 ? "md:text-right md:pr-12" : "md:pl-12"} pl-8 md:pl-0`}>
-              <div className={`flex items-center gap-2 text-muted-foreground mb-2 ${index % 2 === 0 ? "md:justify-end" : ""}`}>
-                <Calendar className="w-4 h-4" />
-                <span className="text-sm">{exp.period}</span>
+            {/* Date column */}
+            <div
+              className={`pl-9 md:w-1/2 md:pl-0 ${
+                index % 2 === 0 ? "md:pr-12 md:text-right" : "md:pl-12"
+              }`}
+            >
+              <div
+                className={`flex items-center gap-2 text-muted-foreground ${
+                  index % 2 === 0 ? "md:justify-end" : ""
+                }`}
+              >
+                <Calendar className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+                <span className="tabular text-sm">{exp.period}</span>
               </div>
-              <span className="text-xs text-muted-foreground/60">{exp.duration}</span>
+              <div
+                className={`mt-2 flex items-center gap-3 text-xs text-muted-foreground/60 ${
+                  index % 2 === 0 ? "md:justify-end" : ""
+                }`}
+              >
+                <span className="tabular" suppressHydrationWarning>
+                  {exp.duration}
+                </span>
+                <span className="h-3 w-px bg-white/10" aria-hidden="true" />
+                <span className="inline-flex items-center gap-1">
+                  <MapPin className="h-3 w-3" aria-hidden="true" />
+                  {exp.location}
+                </span>
+              </div>
             </div>
 
             {/* Content card */}
-            <div className={`md:w-1/2 ${index % 2 === 0 ? "md:pl-12" : "md:pr-12"} pl-8 md:pl-0`}>
-              <div 
-                className={`rounded-2xl p-6 transition-all duration-500 hover:bg-white/[0.05] hover:border-white/[0.12] ${exp.current ? "ring-1 ring-primary/30" : ""}`}
-                style={glassCardStyle}
+            <div
+              className={`pl-9 md:w-1/2 md:pl-0 ${
+                index % 2 === 0 ? "md:pl-12" : "md:pr-12"
+              }`}
+            >
+              <article
+                className={`glass-panel glass-panel--interactive p-6 ${
+                  exp.current ? "glass-panel--active" : ""
+                }`}
               >
                 {/* Header */}
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-xl font-semibold mb-1">{exp.position}</h3>
-                    <div className="flex items-center gap-2 text-primary">
-                      <Briefcase className="w-4 h-4" />
-                      <span className="font-medium">{exp.company}</span>
+                <div className="mb-4 flex items-start gap-4">
+                  <span className="icon-tile h-11 w-11 text-sm font-semibold tracking-tight text-foreground/75">
+                    {exp.initials}
+                  </span>
+
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-[17px] font-semibold leading-snug">{exp.position}</h3>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-2">
+                      <p className="flex items-center gap-2 text-sm font-medium text-foreground/70">
+                        <Briefcase className="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+                        {exp.company}
+                      </p>
+                      {exp.current && (
+                        <span className="inline-flex flex-shrink-0 items-center gap-1.5 rounded-full border border-white/[0.12] bg-white/[0.06] px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.1em] text-foreground/85">
+                          <span className="status-dot h-1.5 w-1.5" />
+                          Current
+                        </span>
+                      )}
                     </div>
                   </div>
-                  {exp.current && (
-                    <span className="text-xs uppercase tracking-wider text-green-400 font-medium px-2 py-1 rounded-full bg-green-400/10 backdrop-blur-sm">
-                      Current
-                    </span>
-                  )}
                 </div>
 
-                {/* Description */}
-                <p className="text-muted-foreground text-sm mb-4">
+                <p className="text-sm leading-relaxed text-muted-foreground">
                   {exp.description}
                 </p>
 
                 {/* Achievements */}
-                <div className="space-y-2 mb-4">
-                  {exp.achievements.slice(0, 3).map((achievement, i) => (
-                    <div key={i} className="flex items-start gap-2 text-sm">
-                      <ChevronRight className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                <ul className="mt-4 space-y-2 border-t border-white/[0.05] pt-4">
+                  {exp.achievements.slice(0, 3).map((achievement) => (
+                    <li key={achievement} className="flex items-start gap-2 text-sm">
+                      <ChevronRight
+                        className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-muted-foreground"
+                        aria-hidden="true"
+                      />
                       <span className="text-muted-foreground">{achievement}</span>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-2">
+                <ul className="mt-5 flex flex-wrap gap-2">
                   {exp.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs px-2.5 py-1 rounded-full bg-white/[0.05] backdrop-blur-sm border border-white/[0.08] text-muted-foreground"
-                    >
+                    <li key={tag} className="tag-chip">
                       {tag}
-                    </span>
+                    </li>
                   ))}
-                </div>
-              </div>
+                </ul>
+              </article>
             </div>
           </motion.div>
         ))}

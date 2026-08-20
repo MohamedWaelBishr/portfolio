@@ -1,32 +1,27 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { 
-  Code2, 
-  Database, 
-  Smartphone, 
-  Globe, 
-  Cloud
-} from "lucide-react";
+import { Code2, Database, Smartphone, Globe, Cloud } from "lucide-react";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { CountUp } from "@/components/ui/count-up";
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.2,
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
     },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] as const },
+    transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] as const },
   },
 };
 
@@ -34,65 +29,47 @@ const skillCategories = [
   {
     title: "Frontend",
     icon: Globe,
-    color: "from-cyan-500 to-blue-500",
     skills: ["React.js", "Next.js", "Angular", "TailwindCSS", "TypeScript"],
   },
   {
     title: "Backend",
     icon: Database,
-    color: "from-violet-500 to-purple-500",
     skills: ["Node.js", "Sails.js", "Strapi", "NestJS", "REST APIs"],
   },
   {
     title: "Mobile",
     icon: Smartphone,
-    color: "from-pink-500 to-rose-500",
     skills: ["React Native", "Cross-platform", "Mobile UI/UX"],
   },
   {
     title: "Tools & Cloud",
     icon: Cloud,
-    color: "from-amber-500 to-orange-500",
     skills: ["Git", "Vercel", "MongoDB", "MySQL", "Docker"],
   },
 ];
 
 const featuredSkills = [
-  { name: "React/Next.js", level: 95, years: "4+" },
+  { name: "React / Next.js", level: 95, years: "4+" },
   { name: "TypeScript", level: 90, years: "3+" },
   { name: "Node.js", level: 90, years: "4+" },
   { name: "React Native", level: 85, years: "3+" },
 ];
 
-// Glassmorphism card style
-const glassCardStyle = {
-  background: "rgba(255, 255, 255, 0.03)",
-  backdropFilter: "blur(20px)",
-  WebkitBackdropFilter: "blur(20px)",
-  border: "1px solid rgba(255, 255, 255, 0.08)",
-  boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05)",
-};
+const stats = [
+  { value: 23, suffix: "+", label: "Projects" },
+  { value: 5, suffix: "+", label: "Years Exp." },
+  { value: 10, suffix: "+", label: "Technologies" },
+];
 
 export function SkillsSection() {
   return (
-    <section className="py-24" id="skills">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.6 }}
-      >
-        {/* Section Header */}
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-12 h-px bg-gradient-to-r from-primary to-transparent" />
-          <span className="text-primary text-sm font-medium uppercase tracking-widest">Expertise</span>
-        </div>
-        <h2 className="text-3xl md:text-4xl font-bold mb-4">Technical Skills</h2>
-        <p className="text-muted-foreground max-w-2xl mb-12">
-          Specialized in modern web technologies with a focus on creating scalable, 
-          performant applications that deliver exceptional user experiences.
-        </p>
-      </motion.div>
+    <section className="py-24 md:py-28" id="skills">
+      <SectionHeading
+        eyebrow="Expertise"
+        title="Technical Skills"
+        description="Specialized in modern web technologies with a focus on creating scalable, performant applications that deliver exceptional user experiences."
+        className="mb-12"
+      />
 
       {/* Bento Grid */}
       <motion.div
@@ -100,91 +77,105 @@ export function SkillsSection() {
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+        className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4"
       >
-        {/* Featured Skills - Large Card */}
-        <motion.div
+        {/* Featured Skills — Large Card */}
+        <motion.article
           variants={itemVariants}
-          className="md:col-span-2 lg:row-span-2 rounded-2xl p-6 transition-all duration-500 hover:bg-white/[0.05] hover:border-white/[0.12] group"
-          style={glassCardStyle}
+          className="glass-panel glass-panel--interactive flex flex-col p-6 md:col-span-2 lg:row-span-2"
         >
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-xl bg-primary/10 backdrop-blur-sm">
-              <Code2 className="w-5 h-5 text-primary" />
+          <div className="mb-7 flex items-center gap-3">
+            <span className="icon-tile h-10 w-10">
+              <Code2 className="h-5 w-5 text-foreground/75" aria-hidden="true" />
+            </span>
+            <div>
+              <h3 className="text-base font-semibold leading-tight">Core Proficiencies</h3>
+              <p className="text-xs text-muted-foreground">Day-to-day production stack</p>
             </div>
-            <h3 className="text-lg font-semibold">Core Proficiencies</h3>
           </div>
-          
-          <div className="space-y-6">
-            {featuredSkills.map((skill) => (
-              <div key={skill.name} className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="font-medium">{skill.name}</span>
-                  <span className="text-sm text-muted-foreground">{skill.years} years</span>
+
+          <div className="flex flex-col gap-6">
+            {featuredSkills.map((skill, index) => (
+              <div key={skill.name} className="space-y-2.5">
+                <div className="flex items-baseline justify-between gap-4">
+                  <span className="text-sm font-medium md:text-[15px]">{skill.name}</span>
+                  <span className="tabular text-xs text-muted-foreground">
+                    {skill.years} years
+                  </span>
                 </div>
-                <div className="h-2 bg-white/[0.05] rounded-full overflow-hidden backdrop-blur-sm">
+                <div className="meter-track">
                   <motion.div
+                    className="meter-fill"
                     initial={{ width: 0 }}
                     whileInView={{ width: `${skill.level}%` }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
-                    className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
+                    transition={{
+                      duration: 1.1,
+                      delay: 0.15 + index * 0.08,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
+                    role="progressbar"
+                    aria-label={skill.name}
+                    aria-valuenow={skill.level}
+                    aria-valuemin={0}
+                    aria-valuemax={100}
                   />
                 </div>
               </div>
             ))}
           </div>
-        </motion.div>
+
+          <p className="mt-auto pt-7 text-xs leading-relaxed text-muted-foreground/80">
+            Proficiency reflects time in production codebases, not certifications.
+          </p>
+        </motion.article>
 
         {/* Skill Category Cards */}
         {skillCategories.map((category) => (
-          <motion.div
+          <motion.article
             key={category.title}
             variants={itemVariants}
-            className="group rounded-2xl p-6 transition-all duration-500 hover:bg-white/[0.05] hover:border-white/[0.12]"
-            style={glassCardStyle}
+            className="glass-panel glass-panel--interactive group p-6"
           >
-            <div className="flex items-center gap-3 mb-4">
-              <div className={`p-2 rounded-xl bg-gradient-to-br ${category.color}`}>
-                <category.icon className="w-5 h-5 text-white" />
-              </div>
-              <h3 className="font-semibold">{category.title}</h3>
+            <div className="mb-4 flex items-center gap-3">
+              <span className="icon-tile h-9 w-9 transition-transform duration-300 group-hover:scale-105">
+                <category.icon
+                  className="h-[18px] w-[18px] text-foreground/75"
+                  aria-hidden="true"
+                />
+              </span>
+              <h3 className="text-[15px] font-semibold">{category.title}</h3>
             </div>
-            
-            <div className="flex flex-wrap gap-2">
+
+            <ul className="flex flex-wrap gap-2">
               {category.skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-white/[0.05] border border-white/[0.1] backdrop-blur-sm transition-all duration-300 hover:bg-white/[0.1] hover:border-primary/50"
-                >
+                <li key={skill} className="tag-chip">
                   {skill}
-                </span>
+                </li>
               ))}
-            </div>
-          </motion.div>
+            </ul>
+          </motion.article>
         ))}
 
         {/* Stats Card */}
-        <motion.div
+        <motion.article
           variants={itemVariants}
-          className="md:col-span-2 flex items-center justify-around rounded-2xl p-6 transition-all duration-500 hover:bg-white/[0.05] hover:border-white/[0.12]"
-          style={glassCardStyle}
+          className="glass-panel glass-panel--interactive flex items-center justify-around p-6 md:col-span-2 lg:col-span-4"
         >
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold gradient-text">23+</div>
-            <div className="text-sm text-muted-foreground mt-1">Projects</div>
-          </div>
-          <div className="w-px h-12 bg-white/[0.1]" />
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold gradient-text">5+</div>
-            <div className="text-sm text-muted-foreground mt-1">Years Exp.</div>
-          </div>
-          <div className="w-px h-12 bg-white/[0.1]" />
-          <div className="text-center">
-            <div className="text-3xl md:text-4xl font-bold gradient-text">10+</div>
-            <div className="text-sm text-muted-foreground mt-1">Technologies</div>
-          </div>
-        </motion.div>
+          {stats.map((stat, index) => (
+            <div key={stat.label} className="contents">
+              {index > 0 && <span className="h-12 w-px bg-white/[0.08]" aria-hidden="true" />}
+              <div className="text-center">
+                <div className="gradient-text text-3xl font-bold tracking-tight md:text-4xl">
+                  <CountUp to={stat.value} suffix={stat.suffix} />
+                </div>
+                <div className="mt-1.5 text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                  {stat.label}
+                </div>
+              </div>
+            </div>
+          ))}
+        </motion.article>
       </motion.div>
     </section>
   );

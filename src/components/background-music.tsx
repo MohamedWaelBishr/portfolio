@@ -38,10 +38,11 @@ export const BackgroundMusic = () => {
   };
 
   return (
-    <div className="fixed bottom-4 right-4 z-50">
+    /* Sits above the scroll-to-top button on desktop so the two never overlap */
+    <div className="fixed bottom-4 right-4 z-50 md:bottom-24 md:right-8">
       <button
         onClick={togglePlay}
-        className="bg-white/10 hover:bg-white/20 rounded-full p-2 backdrop-blur-sm transition-all"
+        className="glass flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground transition-all duration-300 hover:border-primary/40 hover:bg-white/[0.08] hover:text-primary md:h-12 md:w-12"
         aria-label={
           !hasInteracted
             ? "Start music"
